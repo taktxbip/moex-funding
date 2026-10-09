@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import { FundingChart, type ChartPoint } from './FundingChart'
 import './App.css'
 
-const API_URL = '/api/funding-history'
+// Dev: Vite proxies to the live API. Prod (GitHub Pages): static JSON baked at build time
+// (API is HTTP + no CORS, so the browser cannot call it from https://*.github.io).
+const API_URL = import.meta.env.DEV
+  ? '/api/funding-history'
+  : `${import.meta.env.BASE_URL}funding-history.json`
 
 const idToTicker: Record<number, string> = {
   1: 'USDRUBF',
