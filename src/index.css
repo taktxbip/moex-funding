@@ -1,0 +1,56 @@
+:root {
+  --bg: #0c1218;
+  --bg-panel: #141c24;
+  --text: #9aabbc;
+  --text-h: #e8eef4;
+  --muted: #5c6f82;
+  --accent: #3ecf8e;
+  --accent-soft: rgba(62, 207, 142, 0.12);
+  --line: rgba(154, 171, 188, 0.12);
+  --danger: #f07178;
+
+  --font: 'Outfit', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background:
+    radial-gradient(ellipse 80% 50% at 10% -10%, #1a3a2e 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, #1a2838 0%, transparent 50%),
+    var(--bg);
+}
+
+#root {
+  min-height: 100svh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font);
+  font-weight: 500;
+  color: var(--text-h);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
