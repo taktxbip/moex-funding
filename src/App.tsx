@@ -15,6 +15,8 @@ const idToTicker: Record<number, string> = {
   4: 'GLDRUBF',
 }
 
+const tickers = Object.values(idToTicker)
+
 const tickerColors: Record<string, string> = {
   USDRUBF: '#3ecf8e',
   EURRUBF: '#5b9fd4',
@@ -37,13 +39,12 @@ function formatDayLabel(iso: string) {
   })
 }
 
+function emptySeries(): Record<string, ChartPoint[]> {
+  return Object.fromEntries(tickers.map((ticker) => [ticker, []]))
+}
+
 function groupByTicker(records: FundingRecord[]): Record<string, ChartPoint[]> {
-  const grouped: Record<string, ChartPoint[]> = {
-    USDRUBF: [],
-    EURRUBF: [],
-    CNYRUBF: [],
-    GLDRUBF: [],
-  }
+  const grouped = emptySeries()
 
   for (const record of records) {
     const ticker = idToTicker[record.ticker_id]
@@ -51,11 +52,11 @@ function groupByTicker(records: FundingRecord[]): Record<string, ChartPoint[]> {
     grouped[ticker].push({
       day: record.day,
       label: formatDayLabel(record.day),
-      rate: record.rate,
+      value: record.rate,
     })
   }
 
-  for (const ticker of Object.keys(grouped)) {
+  for (const ticker of tickers) {
     grouped[ticker].sort(
       (a, b) => new Date(a.day).getTime() - new Date(b.day).getTime(),
     )
@@ -64,8 +65,24 @@ function groupByTicker(records: FundingRecord[]): Record<string, ChartPoint[]> {
   return grouped
 }
 
+function toCumulative(
+  series: Record<string, ChartPoint[]>,
+): Record<string, ChartPoint[]> {
+  const cumulative = emptySeries()
+
+  for (const ticker of tickers) {
+    let sum = 0
+    cumulative[ticker] = series[ticker].map((point) => {
+      sum += point.value
+      return { ...point, value: sum }
+    })
+  }
+
+  return cumulative
+}
+
 function App() {
-  const [series, setSeries] = useState<Record<string, ChartPoint[]> | null>(null)
+  const [daily, setDaily] = useState<Record<string, ChartPoint[]> | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -79,7 +96,7 @@ function App() {
         const res = await fetch(API_URL)
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const data = (await res.json()) as FundingRecord[]
-        if (!cancelled) setSeries(groupByTicker(data))
+        if (!cancelled) setDaily(groupByTicker(data))
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to load data')
@@ -95,30 +112,42 @@ function App() {
     }
   }, [])
 
+  const cumulative = daily ? toCumulative(daily) : null
+
   return (
     <div className="app">
       <header className="app-header">
         <p className="brand">MOEX</p>
         <h1>Funding rates</h1>
-        <p className="subtitle">Daily history for perpetual futures</p>
+        <p className="subtitle">Daily and cumulative history for perpetual futures</p>
       </header>
 
       {loading && <p className="status">Loading…</p>}
       {error && <p className="status status-error">Error: {error}</p>}
 
-      {series && (
-        <div className="chart-grid">
-          {Object.keys(idToTicker).map((id) => {
-            const ticker = idToTicker[Number(id)]
-            return (
-              <FundingChart
-                key={ticker}
-                ticker={ticker}
-                data={series[ticker]}
-                color={tickerColors[ticker]}
-              />
-            )
-          })}
+      {daily && cumulative && (
+        <div className="ticker-list">
+          {tickers.map((ticker) => (
+            <section key={ticker} className="ticker-section">
+              <h2 className="ticker-title" style={{ color: tickerColors[ticker] }}>
+                {ticker}
+              </h2>
+              <div className="chart-row">
+                <FundingChart
+                  title="Daily"
+                  data={daily[ticker]}
+                  color={tickerColors[ticker]}
+                  valueLabel="rate"
+                />
+                <FundingChart
+                  title="Cumulative"
+                  data={cumulative[ticker]}
+                  color={tickerColors[ticker]}
+                  valueLabel="cumulative"
+                />
+              </div>
+            </section>
+          ))}
         </div>
       )}
     </div>

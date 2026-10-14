@@ -11,32 +11,38 @@ import {
 export type ChartPoint = {
   day: string
   label: string
-  rate: number
+  value: number
 }
 
 type FundingChartProps = {
-  ticker: string
+  title: string
   data: ChartPoint[]
   color: string
+  valueLabel?: string
 }
 
-function formatRate(value: number) {
+function formatValue(value: number) {
   return value.toLocaleString(undefined, {
     maximumFractionDigits: 4,
     minimumFractionDigits: 0,
   })
 }
 
-export function FundingChart({ ticker, data, color }: FundingChartProps) {
-  const latest = data.at(-1)?.rate
+export function FundingChart({
+  title,
+  data,
+  color,
+  valueLabel = 'rate',
+}: FundingChartProps) {
+  const latest = data.at(-1)?.value
 
   return (
     <article className="chart-panel">
       <header className="chart-header">
-        <h2>{ticker}</h2>
+        <h3>{title}</h3>
         {latest !== undefined && (
           <span className="chart-rate" style={{ color }}>
-            {formatRate(latest)}
+            {formatValue(latest)}
           </span>
         )}
       </header>
@@ -58,8 +64,8 @@ export function FundingChart({ ticker, data, color }: FundingChartProps) {
                 tick={{ fill: 'var(--muted)', fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
-                width={48}
-                tickFormatter={formatRate}
+                width={56}
+                tickFormatter={formatValue}
               />
               <Tooltip
                 contentStyle={{
@@ -70,11 +76,11 @@ export function FundingChart({ ticker, data, color }: FundingChartProps) {
                   fontSize: 12,
                 }}
                 labelStyle={{ color: 'var(--muted)' }}
-                formatter={(value) => [formatRate(Number(value)), 'rate']}
+                formatter={(value) => [formatValue(Number(value)), valueLabel]}
               />
               <Line
                 type="monotone"
-                dataKey="rate"
+                dataKey="value"
                 stroke={color}
                 strokeWidth={2}
                 dot={{ r: data.length < 3 ? 4 : 0, fill: color }}

@@ -39,14 +39,28 @@
   color: var(--danger);
 }
 
-.chart-grid {
+.ticker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.ticker-title {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.75rem;
+}
+
+.chart-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
 }
 
 @media (max-width: 800px) {
-  .chart-grid {
+  .chart-row {
     grid-template-columns: 1fr;
   }
 }
@@ -70,10 +84,11 @@
   padding: 0 0.25rem;
 }
 
-.chart-header h2 {
-  font-size: 1rem;
+.chart-header h3 {
+  font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.02em;
+  color: var(--text-h);
 }
 
 .chart-rate {
