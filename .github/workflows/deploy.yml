@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -40,5 +40,21 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Cancel stuck Pages deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ids=$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments" \
+            --jq '.[] | select(.status != "succeed" and .status != "deployment_failed" and .status != "deployment_content_failed" and .status != "deployment_cancelled" and .status != "deployment_lost") | .id')
+          if [ -z "$ids" ]; then
+            echo "No in-progress Pages deployments"
+            exit 0
+          fi
+          for id in $ids; do
+            echo "Cancelling Pages deployment $id"
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${id}/cancel"
+          done
+          sleep 15
       - id: deployment
         uses: actions/deploy-pages@v5
