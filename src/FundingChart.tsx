@@ -19,6 +19,7 @@ type FundingChartProps = {
   data: ChartPoint[]
   color: string
   valueLabel?: string
+  smooth?: boolean
 }
 
 function formatValue(value: number) {
@@ -33,6 +34,7 @@ export function FundingChart({
   data,
   color,
   valueLabel = 'rate',
+  smooth = true,
 }: FundingChartProps) {
   const latest = data.at(-1)?.value
 
@@ -79,7 +81,7 @@ export function FundingChart({
                 formatter={(value) => [formatValue(Number(value)), valueLabel]}
               />
               <Line
-                type="monotone"
+                type={smooth ? 'monotone' : 'linear'}
                 dataKey="value"
                 stroke={color}
                 strokeWidth={2}

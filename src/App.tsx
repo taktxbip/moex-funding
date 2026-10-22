@@ -138,6 +138,7 @@ function App() {
                   data={daily[ticker]}
                   color={tickerColors[ticker]}
                   valueLabel="rate"
+                  smooth={false}
                 />
                 <FundingChart
                   title="Cumulative"
