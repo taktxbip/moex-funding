@@ -76,6 +76,7 @@ export function FundingChart({
                   borderRadius: 8,
                   fontFamily: 'var(--mono)',
                   fontSize: 12,
+                  color: 'var(--text-h)',
                 }}
                 labelStyle={{ color: 'var(--muted)' }}
                 formatter={(value) => [formatValue(Number(value)), valueLabel]}

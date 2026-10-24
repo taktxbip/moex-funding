@@ -5,7 +5,38 @@
 }
 
 .app-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
   margin-bottom: 2rem;
+}
+
+.theme-switch {
+  display: flex;
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--switch-bg);
+  border: 1px solid var(--line);
+}
+
+.theme-switch button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.theme-switch button[aria-pressed='true'] {
+  background: var(--switch-active);
+  color: var(--text-h);
 }
 
 .brand {
@@ -66,7 +97,7 @@
 }
 
 .chart-panel {
-  background: linear-gradient(160deg, var(--bg-panel) 0%, #101820 100%);
+  background: linear-gradient(160deg, var(--bg-panel) 0%, var(--bg-panel-end) 100%);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 1rem 1rem 0.75rem;

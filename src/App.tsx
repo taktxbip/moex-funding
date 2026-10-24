@@ -81,10 +81,23 @@ function toCumulative(
   return cumulative
 }
 
+type Theme = 'day' | 'night'
+
+function readTheme(): Theme {
+  return document.documentElement.dataset.theme === 'day' ? 'day' : 'night'
+}
+
 function App() {
+  const [theme, setTheme] = useState<Theme>(readTheme)
   const [daily, setDaily] = useState<Record<string, ChartPoint[]> | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (theme === 'day') document.documentElement.dataset.theme = 'day'
+    else delete document.documentElement.dataset.theme
+    localStorage.setItem('theme', theme)
+  }, [theme])
 
   useEffect(() => {
     let cancelled = false
@@ -117,9 +130,27 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <p className="brand">MOEX</p>
-        <h1>Funding rates</h1>
-        <p className="subtitle">Daily and cumulative history for perpetual futures</p>
+        <div>
+          <p className="brand">MOEX</p>
+          <h1>Funding rates</h1>
+          <p className="subtitle">Daily and cumulative history for perpetual futures</p>
+        </div>
+        <div className="theme-switch" role="group" aria-label="Theme">
+          <button
+            type="button"
+            aria-pressed={theme === 'day'}
+            onClick={() => setTheme('day')}
+          >
+            Day
+          </button>
+          <button
+            type="button"
+            aria-pressed={theme === 'night'}
+            onClick={() => setTheme('night')}
+          >
+            Night
+          </button>
+        </div>
       </header>
 
       {loading && <p className="status">Loading…</p>}

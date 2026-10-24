@@ -1,6 +1,8 @@
 :root {
+  color-scheme: dark;
   --bg: #0c1218;
   --bg-panel: #141c24;
+  --bg-panel-end: #101820;
   --text: #9aabbc;
   --text-h: #e8eef4;
   --muted: #5c6f82;
@@ -8,9 +10,11 @@
   --accent-soft: rgba(62, 207, 142, 0.12);
   --line: rgba(154, 171, 188, 0.12);
   --danger: #f07178;
+  --switch-bg: #101820;
+  --switch-active: #243140;
 
-  --font: 'Outfit', system-ui, sans-serif;
-  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --mono: 'Plus Jakarta Sans', system-ui, sans-serif;
 
   font-family: var(--font);
   font-size: 16px;
@@ -23,6 +27,22 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root[data-theme='day'] {
+  color-scheme: light;
+  --bg: #f3f5f7;
+  --bg-panel: #ffffff;
+  --bg-panel-end: #f7f9fb;
+  --text: #4d5d6c;
+  --text-h: #15202b;
+  --muted: #6a7b8c;
+  --accent: #0d9a68;
+  --accent-soft: rgba(13, 154, 104, 0.12);
+  --line: rgba(21, 32, 43, 0.1);
+  --danger: #c73e4a;
+  --switch-bg: #e6ebf0;
+  --switch-active: #ffffff;
+}
+
 *,
 *::before,
 *::after {
@@ -32,10 +52,7 @@
 body {
   margin: 0;
   min-height: 100svh;
-  background:
-    radial-gradient(ellipse 80% 50% at 10% -10%, #1a3a2e 0%, transparent 55%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, #1a2838 0%, transparent 50%),
-    var(--bg);
+  background: var(--bg);
 }
 
 #root {
