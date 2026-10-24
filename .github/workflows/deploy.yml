@@ -44,17 +44,27 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -euo pipefail
-          ids=$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments" \
-            --jq '.[] | select(.status != "succeed" and .status != "deployment_failed" and .status != "deployment_content_failed" and .status != "deployment_cancelled" and .status != "deployment_lost") | .id')
-          if [ -z "$ids" ]; then
-            echo "No in-progress Pages deployments"
-            exit 0
-          fi
-          for id in $ids; do
-            echo "Cancelling Pages deployment $id"
-            gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${id}/cancel"
+          # GitHub has no list-deployments route (that call 404s).
+          # A deployment can be addressed by the commit SHA that created it.
+          cancelled=0
+          shas=$(gh api "repos/${GITHUB_REPOSITORY}/commits?per_page=20" --jq '.[].sha' || true)
+          for sha in $shas; do
+            if [ "$sha" = "${GITHUB_SHA}" ]; then
+              continue
+            fi
+            status=$(gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${sha}" --jq '.status' 2>/dev/null || true)
+            case "$status" in
+              deployment_in_progress|syncing_files|finished_file_sync|updating_pages|purging_cdn|deployment_attempt_error)
+                echo "Cancelling Pages deployment $sha ($status)"
+                gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${sha}/cancel" || true
+                cancelled=1
+                ;;
+            esac
           done
-          sleep 15
+          if [ "$cancelled" -eq 1 ]; then
+            sleep 15
+          else
+            echo "No in-progress Pages deployments"
+          fi
       - id: deployment
         uses: actions/deploy-pages@v5
