@@ -12,9 +12,10 @@
   --danger: #f07178;
   --switch-bg: #101820;
   --switch-active: #243140;
+  --cny: #e8eef4;
 
-  --font: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --mono: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font: 'Outfit', system-ui, sans-serif;
+  --mono: 'Outfit', system-ui, sans-serif;
 
   font-family: var(--font);
   font-size: 16px;
@@ -41,6 +42,7 @@
   --danger: #c73e4a;
   --switch-bg: #e6ebf0;
   --switch-active: #ffffff;
+  --cny: #000;
 }
 
 *,

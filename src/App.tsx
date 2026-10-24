@@ -20,7 +20,7 @@ const tickers = Object.values(idToTicker)
 const tickerColors: Record<string, string> = {
   USDRUBF: '#3ecf8e',
   EURRUBF: '#5b9fd4',
-  CNYRUBF: '#e8b84a',
+  CNYRUBF: 'var(--cny)',
   GLDRUBF: '#c9a06a',
 }
 
