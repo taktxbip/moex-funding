@@ -15,7 +15,7 @@ const idToTicker: Record<number, string> = {
   4: 'GLDRUBF',
 }
 
-const tickers = Object.values(idToTicker)
+const tickers = ['CNYRUBF', 'GLDRUBF', 'USDRUBF', 'EURRUBF']
 
 const tickerColors: Record<string, string> = {
   USDRUBF: '#3ecf8e',
